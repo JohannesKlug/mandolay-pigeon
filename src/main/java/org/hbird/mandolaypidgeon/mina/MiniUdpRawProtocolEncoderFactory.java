@@ -4,10 +4,8 @@ import org.apache.mina.common.ByteBuffer;
 import org.apache.mina.common.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
-import org.hbird.transport.commons.util.BytesUtility;
 
 public class MiniUdpRawProtocolEncoderFactory implements ProtocolCodecFactory {
 
@@ -20,7 +18,6 @@ public class MiniUdpRawProtocolEncoderFactory implements ProtocolCodecFactory {
 
 				if (message instanceof byte[]) {
 					byte[] rawData = (byte[]) message;
-					System.out.println("Encode: " + BytesUtility.decimalDump(rawData));
 					ByteBuffer buf = ByteBuffer.allocate(rawData.length);
 					buf.setAutoExpand(false);
 					buf.put(rawData);
@@ -34,8 +31,7 @@ public class MiniUdpRawProtocolEncoderFactory implements ProtocolCodecFactory {
 
 			@Override
 			public void dispose(IoSession session) throws Exception {
-				// TODO Auto-generated method stub
-
+				throw new UnsupportedOperationException();
 			}
 		};
 	}
