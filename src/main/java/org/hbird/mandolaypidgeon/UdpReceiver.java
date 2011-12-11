@@ -13,11 +13,12 @@ public class UdpReceiver {
 	 * the source IP address as the payload layout identifier.
 	 * @param datagram UDP payload
 	 * @param ioSession 
-	 * @return
+	 * @return {@link GenericPayload}
 	 */
 	public static GenericPayload fromIpBasedPayloadIdentifier(byte[] datagram, @Header("CamelMinaIoSession") IoSession ioSession) {
 		InetSocketAddress sockadd = (InetSocketAddress)ioSession.getLocalAddress();
 		String ipAddress = sockadd.getAddress().getHostAddress();
+
 		GenericPayload packetPayload = new GenericPayload(datagram, ipAddress,  System.currentTimeMillis());
 		return packetPayload;
 	}

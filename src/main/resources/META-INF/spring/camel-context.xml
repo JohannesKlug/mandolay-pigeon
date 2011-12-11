@@ -36,24 +36,24 @@
 		class="org.hbird.spacesystempublisher.publishing.InMemorySpaceSystemPublisher">
 		<property name="model" ref="ssmodel"></property>
 	</bean>
-
+	
+	<bean id="byteCodec" class="org.hbird.mandolaypidgeon.mina.MiniUdpRawProtocolEncoderFactory" />
+	
 
 	<camel:camelContext xmlns="http://camel.apache.org/schema/spring">
 		<camel:package>org.hbird.mandolaypidgeon</camel:package>
 
-<!-- 		<camel:route> -->
-<!-- 			<camel:from uri="mina:udp://localhost:5150" /> -->
-<!-- 			<camel:setExchangePattern pattern="InOnly"/> -->
-<!-- 			<camel:to uri="bean:udpReceiver" /> -->
-<!-- 			<camel:to uri="bean:payload-codec" /> -->
-<!-- 			<camel:to uri="stream:out" /> -->
-<!-- 		</camel:route> -->
+		<camel:route>
+			<camel:from uri="mina:udp://localhost:5150?allowDefaultCodec=false&amp;sync=false" />
+			<camel:to uri="bean:udpReceiver" />
+			<camel:to uri="bean:payload-codec" />
+			<camel:to uri="stream:out" />
+		</camel:route>
 		
 		<camel:route>
 			<camel:from uri="file:///tmp/strand/"/>
-			<camel:setExchangePattern pattern="InOnly"/>
-<!-- 			<camel:convertBodyTo type="byte[]" /> -->
-			<camel:to uri="mina:udp://localhost:5150?sync=false" />
+			<camel:convertBodyTo type="byte[]" />
+			<camel:to uri="mina:udp://localhost:5150?allowDefaultCodec=false&amp;sync=false&amp;codec=#byteCodec" />
 		</camel:route>
 
 
