@@ -4,7 +4,7 @@ import java.net.InetSocketAddress;
 
 import org.apache.camel.Header;
 import org.apache.mina.common.IoSession;
-import org.hbird.transport.commons.data.GenericPayload;
+import org.hbird.core.commons.data.GenericPayload;
 
 public class UdpReceiver {
 

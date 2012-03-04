@@ -18,23 +18,27 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-	<bean id="udpReceiver" class="org.hbird.mandolaypidgeon.UdpReceiver" />
+	<bean id="udpReceiver" class="org.hbird.mandolaypigeon.protocols.UdpReceiver" />
 
-	<bean id="encodings" factory-bean="publisher" factory-method="getEncodings"></bean>
 
-	<bean id="payload-codec" class="org.hbird.transport.payloadcodec.InMemoryPayloadCodec">
-		<constructor-arg ref="ssmodel"></constructor-arg>
-		<constructor-arg ref="encodings"></constructor-arg>
-	</bean>
-
-	<bean id="ssmodel" class="org.hbird.transport.xtce.XtceSpaceSystemModelFactory"
+	<bean id="ssmodel" class="org.hbird.core.xtce.XtceSpaceSystemModelFactory"
 		factory-method="createSpaceSystemModel">
 		<constructor-arg value="Strand.xml"></constructor-arg>
 	</bean>
-
+	
 	<bean id="publisher"
-		class="org.hbird.spacesystempublisher.publishing.InMemorySpaceSystemPublisher">
+		class="org.hbird.core.spacesystempublisher.publishing.InMemorySpaceSystemPublisher">
 		<property name="model" ref="ssmodel"></property>
+	</bean>
+	
+	<bean id="parameterGroups" factory-bean="publisher" factory-method="getParameterGroups"></bean>
+	<bean id="encodings" factory-bean="publisher" factory-method="getEncodings"></bean>
+	<bean id="restrictions" factory-bean="publisher" factory-method="getRestrictions"></bean>
+	
+	<bean id="payload-codec" class="org.hbird.transport.payloadcodec.InMemoryPayloadCodec">
+		<constructor-arg ref="parameterGroups"></constructor-arg>
+		<constructor-arg ref="encodings"></constructor-arg>
+		<constructor-arg ref="restrictions"></constructor-arg>
 	</bean>
 	
 	<bean id="byteCodec" class="org.hbird.transport.protocols.ip.udp.MinaUdpRawProtocolEncoderFactory" />
