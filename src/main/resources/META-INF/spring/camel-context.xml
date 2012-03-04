@@ -20,7 +20,6 @@
 
 	<bean id="udpReceiver" class="org.hbird.mandolaypigeon.protocols.UdpReceiver" />
 
-
 	<bean id="ssmodel" class="org.hbird.core.xtce.XtceSpaceSystemModelFactory"
 		factory-method="createSpaceSystemModel">
 		<constructor-arg value="Strand.xml"></constructor-arg>
@@ -44,6 +43,29 @@
 	<bean id="byteCodec" class="org.hbird.transport.protocols.ip.udp.MinaUdpRawProtocolEncoderFactory" />
 	
 
+
+	<!-- TRANSPORT BEANS -->
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+
+	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="maxConnections" value="8" />
+		<property name="maximumActive" value="500" />
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory" />
+		<property name="transacted" value="false" />
+		<property name="concurrentConsumers" value="10" />
+	</bean>
+
+	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig" />
+	</bean>
+	
+	
 	<camel:camelContext xmlns="http://camel.apache.org/schema/spring">
 		<camel:package>org.hbird.mandolaypidgeon</camel:package>
 
@@ -59,7 +81,7 @@
 			<camel:from uri="mina:udp://localhost:5150?allowDefaultCodec=false&amp;sync=false" />
 			<camel:to uri="bean:udpReceiver" />
 			<camel:to uri="bean:payload-codec" />
-			<camel:to uri="stream:out" />
+			<camel:to uri="activemq:parameterGroups" />
 		</camel:route>
 		
 
